@@ -85,8 +85,8 @@ async def create_product(id: int, name: str, price: float, description: str):
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        cursor.execute("INSERT INTO products (id, name, price, description) VALUES (?, ?, ?, ?)",
-                    (id, name, price, description))
+        cursor.execute("INSERT INTO products (name, price, description) VALUES (?, ?, ?)",
+                    (name, price, description))
         conn.commit()
         conn.close()
         
