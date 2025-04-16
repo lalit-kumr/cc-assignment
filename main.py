@@ -8,6 +8,7 @@ import os
 import psycopg2
 from psycopg2 import sql
 from pydantic import BaseModel
+import sqlite3
 
 # Create the FastAPI app
 app = FastAPI()
@@ -24,8 +25,10 @@ class Product(BaseModel):
 # Function to get a database connection
 def get_db_connection():
     # DATABASE_URL = "postgresql://database1_9tum_user:1K36dHfeeou8j7Mox0XTk3agwXklB5cF@dpg-cvas25fnoe9s73fepq10-a.singapore-postgres.render.com/database1_9tum"
-    DATABASE_URL = "postgresql://database1_9tum_user:1K36dHfeeou8j7Mox0XTk3agwXklB5cF@dpg-cvas25fnoe9s73fepq10-a/database1_9tum"
-    conn = psycopg2.connect(DATABASE_URL)
+    # DATABASE_URL = "postgresql://database1_9tum_user:1K36dHfeeou8j7Mox0XTk3agwXklB5cF@dpg-cvas25fnoe9s73fepq10-a/database1_9tum"
+    DATABASE_URL = "products_db.sqlite"
+    # conn = psycopg2.connect(DATABASE_URL)
+    conn = sqlite3.connect(DATABASE_URL)
     return conn
 
 # Initialize the database
@@ -82,7 +85,7 @@ async def create_product(id: int, name: str, price: float, description: str):
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        cursor.execute("INSERT INTO products (id, name, price, description) VALUES (%s, %s, %s, %s)",
+        cursor.execute("INSERT INTO products (id, name, price, description) VALUES (?, ?, ?, ?)",
                     (id, name, price, description))
         conn.commit()
         conn.close()
